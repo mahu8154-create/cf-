@@ -22,8 +22,10 @@ jobs:
 
       - name: 下载 CloudflareSpeedTest 测速工具
         run: |
-          # 自动获取最新版本的压缩包并下载
-          wget -O CloudflareST.tar.gz $(wget -qO- https://api.github.com/repos/XIU2/CloudflareSpeedTest/releases/latest | grep -oE "https://.*linux_amd64\.tar\.gz")
+          # 精准获取最新版本的 linux_amd64 下载直链
+          DOWNLOAD_URL=$(wget -qO- https://api.github.com/repos/XIU2/CloudflareSpeedTest/releases/latest | grep -oE "https://[^\"]*linux_amd64\.tar\.gz" | head -n 1)
+          echo "下载地址: $DOWNLOAD_URL"
+          wget -O CloudflareST.tar.gz "$DOWNLOAD_URL"
           tar -zxvf CloudflareST.tar.gz
 
       - name: 运行测速
