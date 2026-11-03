@@ -22,9 +22,9 @@ jobs:
 
       - name: 下载并解压测速工具
         run: |
-          # 使用 GitHub 官方稳定的 latest 直链下载最新版压缩包
           wget -O cfst.tar.gz https://github.com/XIU2/CloudflareSpeedTest/releases/latest/download/cfst_linux_amd64.tar.gz
           tar -zxvf cfst.tar.gz
+          chmod +x CloudflareST
 
       - name: 运行测速
         run: |
