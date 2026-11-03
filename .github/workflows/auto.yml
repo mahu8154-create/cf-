@@ -24,7 +24,9 @@ jobs:
         run: |
           wget -O cfst.tar.gz https://github.com/XIU2/CloudflareSpeedTest/releases/latest/download/cfst_linux_amd64.tar.gz
           tar -zxvf cfst.tar.gz
-          chmod +x CloudflareST
+          # 给新版程序赋予权限，并移动重命名为 CloudflareST
+          chmod +x cfst_linux_amd64/cfst
+          mv cfst_linux_amd64/cfst ./CloudflareST
 
       - name: 运行测速
         run: |
