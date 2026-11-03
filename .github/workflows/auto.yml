@@ -1,0 +1,38 @@
+name: Cloudflare Auto IP
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # 每 6 小时自动运行一次
+  workflow_dispatch: # 允许手机随时手动点击运行
+
+jobs:
+  run-st:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 迁出代码
+        uses: actions/checkout@v3
+
+      - name: 安装 Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 安装依赖
+        run: pip install requests
+
+      - name: 下载 CloudflareSpeedTest 测速工具
+        run: |
+          wget -O CloudflareST.tar.gz https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareSpeedTest_linux_amd64.tar.gz
+          tar -zxvf CloudflareST.tar.gz
+
+      - name: 运行测速
+        run: |
+          # -n 100 表示测速 100 个 IP，-t 4 表示线程
+          ./CloudflareST -n 100 -t 4 -o result.txt
+
+      - name: 同步 IP 到 Cloudflare
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          RECORD_NAME: ${{ secrets.RECORD_NAME }}
+        run: python3 update.py
